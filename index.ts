@@ -1,7 +1,10 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import html from "@elysiajs/html";
 import staticPlugin from "@elysiajs/static";
 import { Elysia } from "elysia";
+import { isValidElement } from "react";
+import { renderToString } from "react-dom/server";
 
 let viewsPath = "";
 
@@ -55,12 +58,18 @@ async function registerRoutes(app: Elysia, baseDir: string, prefix = "/") {
 			await registerRoutes(app, fullPath, path.join(prefix, entry.name));
 			continue;
 		}
-		if (entry.name !== "index.ts") continue;
+		if (entry.name !== "index.ts" && entry.name !== "index.tsx") continue;
 		const module = (await import(fullPath)) as Record<string, unknown>;
 		const defaultFn = module.default;
 		if (defaultFn && typeof defaultFn === "function") {
-			app.all(prefix, ({ request, query, params }) => {
-				return defaultFn({ request, query, params });
+			app.all(prefix, async ({ request, query, params }) => {
+				const result = await defaultFn({ request, query, params });
+				if (isValidElement(result)) {
+					return new Response(renderToString(result), {
+						headers: { "Content-Type": "text/html; charset=utf-8" },
+					});
+				}
+				return result;
 			});
 			console.log(`Registered ${fullPath} on ${prefix} route with method all`);
 		}
@@ -70,8 +79,14 @@ async function registerRoutes(app: Elysia, baseDir: string, prefix = "/") {
 			const fn = prop as RouteFn;
 			const name = fn.name.toLowerCase();
 			if (!["get", "post", "put", "patch", "delete"].includes(name)) continue;
-			app[name as "get"](prefix, ({ request, query, params }) => {
-				return fn({ request, query, params });
+			app[name as "get"](prefix, async ({ request, query, params }) => {
+				const result = await fn({ request, query, params });
+				if (isValidElement(result)) {
+					return new Response(renderToString(result), {
+						headers: { "Content-Type": "text/html; charset=utf-8" },
+					});
+				}
+				return result;
 			});
 			console.log(
 				`Registered ${fullPath} on ${prefix} route with method ${name}`,
