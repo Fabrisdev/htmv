@@ -56,13 +56,23 @@ async function registerRoutes(app: Elysia, baseDir: string, prefix = "/") {
 			continue;
 		}
 		if (entry.name !== "index.ts") continue;
-		const module = await import(fullPath);
-		const fn = module.default as (
-			_: RouteParams,
-		) => Promise<Response> | Response | Promise<string> | string;
-		app.get(prefix, ({ request, query, params }) => {
-			return fn({ request, query, params });
-		});
-		console.log(`Registered ${fullPath} on ${prefix} route`);
+		const module = (await import(fullPath)) as Record<string, unknown>;
+		for (const propName in module) {
+			const prop = module[propName];
+			if (typeof prop !== "function") continue;
+			const fn = prop as RouteFn;
+			const name = fn.name.toLowerCase();
+			if (!["get", "post", "put", "patch", "delete"].includes(name)) continue;
+			app[name as "get"](prefix, ({ request, query, params }) => {
+				return fn({ request, query, params });
+			});
+			console.log(
+				`Registered ${fullPath} on ${prefix} route with method ${name}`,
+			);
+		}
 	}
 }
+
+type RouteFn = (
+	_: RouteParams,
+) => Promise<Response> | Response | Promise<string> | string;
