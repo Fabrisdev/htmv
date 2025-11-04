@@ -20,7 +20,11 @@ export async function view(view: string, props: Record<string, unknown>) {
 	});
 }
 
-export type RouteParams = {};
+export type RouteParams = {
+	query: Record<string, string>;
+	request: Request;
+	params: Record<string, string>;
+};
 
 type Paths = {
 	routes: string;
@@ -53,8 +57,12 @@ async function registerRoutes(app: Elysia, baseDir: string, prefix = "/") {
 		}
 		if (entry.name !== "index.ts") continue;
 		const module = await import(fullPath);
-		const fn = module.default;
-		app.get(prefix, fn);
+		const fn = module.default as (
+			_: RouteParams,
+		) => Promise<Response> | Response | Promise<string> | string;
+		app.get(prefix, ({ request, query, params }) => {
+			return fn({ request, query, params });
+		});
 		console.log(`Registered ${fullPath} on ${prefix} route`);
 	}
 }
