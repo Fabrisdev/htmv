@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import node from "@elysiajs/node";
 import staticPlugin from "@elysiajs/static";
 import { Elysia } from "elysia";
 
@@ -10,8 +11,8 @@ export async function view(view: string, props: Record<string, unknown>) {
 		throw new Error(
 			"Views folder path not yet configured. Use `Htmv.setup` before rendering a view.",
 		);
-	const file = Bun.file(path.join(viewsPath, `${view}.html`));
-	const code = await file.text();
+	const filePath = path.join(viewsPath, `${view}.html`);
+	const code = await fs.readFile(filePath, "utf-8");
 	const replacedCode = code.replace(/{(.+)}/g, (_, propName) => {
 		return props[propName] as string;
 	});
@@ -34,7 +35,7 @@ type Paths = {
 };
 export async function setup(paths: Paths) {
 	viewsPath = paths.views;
-	const app = new Elysia().use(
+	const app = new Elysia({ adapter: node() }).use(
 		staticPlugin({
 			assets: paths.public,
 		}),
