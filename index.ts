@@ -2,8 +2,6 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import staticPlugin from "@elysiajs/static";
 import { Elysia } from "elysia";
-import { isValidElement } from "react";
-import { renderToString } from "react-dom/server";
 
 let viewsPath = "";
 
@@ -63,11 +61,6 @@ async function registerRoutes(app: Elysia, baseDir: string, prefix = "/") {
 		if (defaultFn && typeof defaultFn === "function") {
 			app.all(prefix, async ({ request, query, params }) => {
 				const result = await defaultFn({ request, query, params });
-				if (isValidElement(result)) {
-					return new Response(renderToString(result), {
-						headers: { "Content-Type": "text/html; charset=utf-8" },
-					});
-				}
 				return result;
 			});
 			console.log(`Registered ${fullPath} on ${prefix} route with method all`);
@@ -80,11 +73,6 @@ async function registerRoutes(app: Elysia, baseDir: string, prefix = "/") {
 			if (!["get", "post", "put", "patch", "delete"].includes(name)) continue;
 			app[name as "get"](prefix, async ({ request, query, params }) => {
 				const result = await fn({ request, query, params });
-				if (isValidElement(result)) {
-					return new Response(renderToString(result), {
-						headers: { "Content-Type": "text/html; charset=utf-8" },
-					});
-				}
 				return result;
 			});
 			console.log(

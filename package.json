@@ -11,9 +11,6 @@
   },
   "dependencies": {
     "@elysiajs/static": "^1.4.6",
-    "@types/react-dom": "^19.2.2",
-    "elysia": "^1.4.15",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "elysia": "^1.4.15"
   }
 }
