@@ -22,11 +22,9 @@ describe("Routing tests", () => {
 			);
 			const app = new Elysia();
 			await registerRoutes(app, project);
-			expect(app.routes).toEqual(
-				expect.arrayContaining(
-					expectedOutput.map((route: object) => expect.objectContaining(route)),
-				),
-			);
+			expect(
+				app.routes.map((route) => ({ method: route.method, path: route.path })),
+			).toEqual(expectedOutput);
 		});
 	});
 });
