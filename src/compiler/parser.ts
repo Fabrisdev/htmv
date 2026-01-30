@@ -1,5 +1,5 @@
-import type { Node, RootNode } from "./renderer";
-import type { Token } from "./tokenizer";
+import type { Node, RootNode } from "./renderer.js";
+import type { Token } from "./tokenizer.js";
 
 export function parse(tokens: Token[]) {
 	let i = 0;

@@ -1,6 +1,6 @@
-import type Elysia from "elysia";
-import { resolveResponse } from "../http/response";
-import type { Method, RouteFn } from "./types";
+import type { Elysia } from "elysia";
+import { resolveResponse } from "../http/response.js";
+import type { Method, RouteFn } from "./types.js";
 
 type RegisterRouteParams = {
 	app: Elysia;

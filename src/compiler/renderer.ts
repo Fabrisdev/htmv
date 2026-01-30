@@ -1,4 +1,4 @@
-import { view } from "../views";
+import { view } from "../views.js";
 
 export type Node =
 	| RootNode

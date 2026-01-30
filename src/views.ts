@@ -1,8 +1,8 @@
-import { parse } from "./compiler/parser";
-import { render } from "./compiler/renderer";
-import { tokenize } from "./compiler/tokenizer";
-import type { HttpResponse } from "./http/response";
-import { viewRegistry } from "./views-registry";
+import { parse } from "./compiler/parser.js";
+import { render } from "./compiler/renderer.js";
+import { tokenize } from "./compiler/tokenizer.js";
+import type { HttpResponse } from "./http/response.js";
+import { viewRegistry } from "./views-registry.js";
 
 export let viewsPath = "";
 

@@ -1,4 +1,4 @@
-import { type Headers, type HttpResponse, requestHelper } from "./response";
+import { type Headers, type HttpResponse, requestHelper } from "./response.js";
 
 export function httpResponse(response: HttpResponse) {
 	return response;

@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { viewsPath } from "./views";
+import { viewsPath } from "./views.js";
 
 export const viewRegistry: Record<string, string> = {};
 
