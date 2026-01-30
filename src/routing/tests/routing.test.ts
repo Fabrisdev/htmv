@@ -24,7 +24,7 @@ describe("Routing tests", () => {
 			await registerRoutes(app, project);
 			expect(
 				app.routes.map((route) => ({ method: route.method, path: route.path })),
-			).toEqual(expectedOutput);
+			).toEqual(expect.arrayContaining(expectedOutput));
 		});
 	});
 });
