@@ -1,10 +1,10 @@
 [
 	{
 		"method": "DELETE",
-		"path": "/"
+		"path": ""
 	},
 	{
 		"method": "GET",
-		"path": "/"
+		"path": ""
 	}
 ]
