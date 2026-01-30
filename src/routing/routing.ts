@@ -12,7 +12,7 @@ export async function registerRoutes(
 	for (const entry of entries) {
 		const fullPath = path.join(baseDir, entry.name).replaceAll("\\", "/");
 		if (entry.isDirectory()) {
-			await registerRoutes(app, fullPath, [prefix, entry.name].join('/'));
+			await registerRoutes(app, fullPath, [prefix, entry.name].join("/"));
 			continue;
 		}
 		if (entry.name !== "index.js" && entry.name !== "index.ts") continue;
